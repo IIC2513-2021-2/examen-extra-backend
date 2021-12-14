@@ -7,6 +7,5 @@ describe('GET /', () => {
   test('responds correctly', async () => {
     const response = await request.get('/');
     expect(response.status).toBe(200);
-    expect(response.text).toMatchSnapshot();
   });
 });
