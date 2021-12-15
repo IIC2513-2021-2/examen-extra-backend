@@ -11,6 +11,11 @@ const ExpeditionDetailSerializer = new JSONAPISerializer('expeditions', {
   keyForAttribute: 'camelCase',
 });
 
+const MemberSerializer = new JSONAPISerializer('members', {
+  attributes: ['name', 'agency', 'nationality', 'bio', 'photo', 'role'],
+  keyForAttribute: 'camelCase',
+});
+
 const router = new KoaRouter();
 
 router.param('id', async (id, ctx, next) => {
@@ -28,6 +33,12 @@ router.get('api.expeditions.index', '/', async (ctx) => {
 router.get('api.candidates.show', '/:id', async (ctx) => {
   const { expedition } = ctx.state;
   ctx.body = ExpeditionDetailSerializer.serialize(expedition);
+});
+
+router.get('api.candidates.members', '/:id/members', async (ctx) => {
+  const { expedition } = ctx.state;
+  const members = await expedition.getMembers();
+  ctx.body = MemberSerializer.serialize(members);
 });
 
 module.exports = router;
