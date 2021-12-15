@@ -1,6 +1,14 @@
 const KoaRouter = require('koa-router');
 const JSONAPISerializer = require('jsonapi-serializer').Serializer;
 
+const PERMITTED_EXPEDITION_FIELDS = [
+  'name',
+  'startDate',
+  'endDate',
+  'patch',
+  'description',
+];
+
 const ExpeditionSerializer = new JSONAPISerializer('expeditions', {
   attributes: ['name', 'startDate', 'endDate', 'patch'],
   keyForAttribute: 'camelCase',
@@ -30,15 +38,26 @@ router.get('api.expeditions.index', '/', async (ctx) => {
   ctx.body = ExpeditionSerializer.serialize(expeditions);
 });
 
-router.get('api.candidates.show', '/:id', async (ctx) => {
+router.get('api.expeditions.show', '/:id', async (ctx) => {
   const { expedition } = ctx.state;
   ctx.body = ExpeditionDetailSerializer.serialize(expedition);
 });
 
-router.get('api.candidates.members', '/:id/members', async (ctx) => {
+router.get('api.expeditions.members', '/:id/members', async (ctx) => {
   const { expedition } = ctx.state;
   const members = await expedition.getMembers();
   ctx.body = MemberSerializer.serialize(members);
+});
+
+router.patch('api.expeditions.update', '/:id', async (ctx) => {
+  const { expedition } = ctx.state;
+  try {
+    await expedition.update(ctx.request.body, { fields: PERMITTED_EXPEDITION_FIELDS });
+  } catch (ValidationError) {
+    ctx.throw(422, ValidationError.message);
+  }
+
+  ctx.body = ExpeditionDetailSerializer.serialize(expedition);
 });
 
 module.exports = router;

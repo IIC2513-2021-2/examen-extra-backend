@@ -17,18 +17,37 @@ module.exports = (sequelize, DataTypes) => {
   expedition.init({
     name: {
       type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     startDate: {
       type: DataTypes.DATEONLY,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+        isDate: true,
+      },
     },
     endDate: {
       type: DataTypes.DATEONLY,
+      validate: {
+        isDate: true,
+      },
     },
     patch: {
       type: DataTypes.STRING,
+      validate: {
+        isUrl: true,
+      },
     },
     description: {
       type: DataTypes.TEXT,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
   }, {
     sequelize,
