@@ -17,21 +17,44 @@ module.exports = (sequelize, DataTypes) => {
   member.init({
     name: {
       type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     agency: {
       type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     nationality: {
       type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     bio: {
       type: DataTypes.TEXT,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     photo: {
       type: DataTypes.STRING,
+      validate: {
+        isUrl: true,
+      },
     },
     role: {
       type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     expeditionId: {
       type: DataTypes.INTEGER,

@@ -9,6 +9,16 @@ const PERMITTED_EXPEDITION_FIELDS = [
   'description',
 ];
 
+const PERMITTED_MEMBER_FIELDS = [
+  'name',
+  'agency',
+  'nationality',
+  'bio',
+  'photo',
+  'role',
+  'expeditionId',
+];
+
 const ExpeditionSerializer = new JSONAPISerializer('expeditions', {
   attributes: ['name', 'startDate', 'endDate', 'patch'],
   keyForAttribute: 'camelCase',
@@ -58,6 +68,19 @@ router.patch('api.expeditions.update', '/:id', async (ctx) => {
   }
 
   ctx.body = ExpeditionDetailSerializer.serialize(expedition);
+});
+
+router.post('api.members.create', '/:id/members', async (ctx) => {
+  const { expedition } = ctx.state;
+  const member = ctx.orm.member.build({ ...ctx.request.body, expeditionId: expedition.id });
+  try {
+    await member.save({ fields: PERMITTED_MEMBER_FIELDS });
+  } catch (ValidationError) {
+    ctx.throw(422, ValidationError.message);
+  }
+
+  ctx.status = 201;
+  ctx.body = MemberSerializer.serialize(member);
 });
 
 module.exports = router;
